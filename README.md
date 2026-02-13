@@ -139,8 +139,3 @@ sequenceDiagram
 **Arigi Adinoyi Samuel**
 Senior Backend & Full-Stack | DevOps Engineer
 GitHub: [cozytech](https://github.com/cozytech)
-
-
-If you want, I can **also create a professional Go CLI diagram** like the Ecommerce API diagram we did — showing **CLI → Validation → Storage → Response flow visually**, so your README is fully visual and recruiter-ready.
-
-Do you want me to generate that diagram?
