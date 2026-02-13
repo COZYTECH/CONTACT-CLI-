@@ -6,8 +6,19 @@ package main
 // List all contacts
 // Search contact by name
 
+// Challenge:
+
+// Convert the map values to a slice, sort them alphabetically by name, then print.
+
+// Hint:
+
+// Use sort package
+
+// Use sort.Slice
+
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -38,6 +49,7 @@ func  main() {
 
 	// Using map for faster lookup
 contacts := make(map[string]*Contact)
+
 
 
 for {
@@ -72,6 +84,15 @@ for {
 				fmt.Println("Contact added!")
 			}
         case 2:
+			//convert map to slice for sorting
+			var contactSlice [] *Contact
+			for _, c := range contacts {
+				contactSlice = append(contactSlice, c)
+			}
+			//sort the slice by name
+			sort.Slice(contactSlice, func(i, j int) bool {
+				return strings.ToLower(contactSlice[i].Name) < strings.ToLower(contactSlice[j].Name)
+			})
             fmt.Println("Contacts:")
             for _, c := range contacts {
                 fmt.Println("-", c.Name, ":", c.Email)
