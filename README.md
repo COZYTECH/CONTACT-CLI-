@@ -37,25 +37,7 @@ It’s perfect for showcasing **system design, Go coding standards, and CLI-firs
 
 ---
 
-## ⚙ Project Structure (Go-specific)
 
-```
-├── cmd/                 # CLI entrypoint (main.go)
-├── internal/
-│   ├── commands/        # Command handlers (add, list, get, update, remove)
-│   ├── storage/         # Storage interface & JSON persistence
-│   └── models/          # Contact data models
-├── utils/               # Validation & helpers
-├── data/                # Local storage files
-├── go.mod
-└── README.md
-```
-
-* **Separation of concerns:** CLI parsing vs business logic
-* **Extensibility:** Add new commands or storage backends
-* **Testability:** Core logic isolated from I/O
-
----
 
 ## 🛠 Installation & Usage
 
