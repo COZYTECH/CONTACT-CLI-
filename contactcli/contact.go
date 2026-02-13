@@ -17,7 +17,9 @@ package main
 // Use sort.Slice
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"sort"
 	"strings"
 )
@@ -40,6 +42,37 @@ func (c *Contact) UpdateName(newName string) {
 func (c Contact) Greet() string {
 	return fmt.Sprintf("Hello, %s! Your email is %s.", c.Name, c.Email)
 }
+//save func to disk or contact list to file 
+
+func saveContactsToFile(contacts map[string]*Contact, filename string) error {
+	data, err := json.MarshalIndent(contacts, "", "  ") // pretty print
+    if err != nil {
+        return err
+    }
+    return os.WriteFile(filename, data, 0644) // write to file
+
+}
+
+func loadContactsFromFile(filename string) (map[string]*Contact, error) {
+	contacts := make(map[string]*Contact)
+
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+        return contacts, nil // file doesn’t exist yet
+    }
+
+    data, err := os.ReadFile(filename)
+    if err != nil {
+        return nil, err
+    }
+
+    err = json.Unmarshal(data, &contacts)
+    if err != nil {
+        return nil, err
+    }
+
+    return contacts, nil
+}
+
 
 func  main() {
 
@@ -49,7 +82,14 @@ func  main() {
 
 	// Using map for faster lookup
 contacts := make(map[string]*Contact)
+// Load contacts from file if it exists
+const filename = "C:\\Users\\HP\\Desktop\\conatctcli\\contactcli\\contacts.json"
 
+contacts, err := loadContactsFromFile(filename)
+if err != nil {
+    fmt.Println("Error loading contacts:", err)
+    return
+}
 
 
 for {
@@ -73,15 +113,23 @@ for {
             fmt.Print("Enter email: ")
             fmt.Scanln(&email)
 			name = strings.ToLower(name)
+			
 
             //contacts = append(contacts, Contact{Name: name, Email: email})
 			//contacts[name] = &Contact{Name: name, Email: email}
             //fmt.Println("Contact added!")
+			
 			if _, exists := contacts[name]; exists {
 				fmt.Println("Contact already exists.")
 			} else {
 				contacts[name] = &Contact{Name: name, Email: email}
-				fmt.Println("Contact added!")
+				//fmt.Println("Contact added!")
+				err := saveContactsToFile(contacts, filename)
+				if err != nil {
+					fmt.Println("Error saving contacts:", err)
+				} else {
+					fmt.Println("Contacts saved to", filename)
+				}
 			}
         case 2:
 			//convert map to slice for sorting
@@ -94,9 +142,9 @@ for {
 				return strings.ToLower(contactSlice[i].Name) < strings.ToLower(contactSlice[j].Name)
 			})
             fmt.Println("Contacts:")
-            for _, c := range contacts {
+            for _, c := range contactSlice {
                 fmt.Println("-", c.Name, ":", c.Email)
-				fmt.Println("Total contacts:", len(contacts))
+				fmt.Println("Total contacts:", len(contactSlice))
             }
         case 3:
             var name string
@@ -105,13 +153,20 @@ for {
 			name = strings.ToLower(name)
 
             found := false
-            for _, c := range contacts {
-                if c.Name == name {
-                    fmt.Println("Found:", c.Name, "->", c.Email)
-                    found = true
-                    break
-                }
-            }
+            // for _, c := range contacts {
+            //     if c.Name == name {
+            //         fmt.Println("Found:", c.Name, "->", c.Email)
+            //         found = true
+            //         break
+            //     }
+            // }
+			name = strings.ToLower(name)
+			if contact, exists := contacts[name]; exists {
+				fmt.Println("Found:", contact.Name, "->", contact.Email)
+			} else {
+				fmt.Println("Contact not found.")
+			}
+
             if !found {
                 fmt.Println("Contact not found.")
             }
@@ -157,6 +212,7 @@ for {
 
 		 if contact, exists := contacts[oldName]; exists {
 			 delete(contacts, oldName)
+			 newName = strings.ToLower(newName)
 			 contacts[newName] = contact
 			 fmt.Println("Contact name updated!")
 		 } else {
