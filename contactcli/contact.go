@@ -109,12 +109,19 @@ for {
 			}
 		case 5: // Delete Contact
 			var name string
+			var confirm string
 			fmt.Print("Enter name: ")
 			fmt.Scanln(&name)
 
 			if _, exists := contacts[name]; exists {
-				delete(contacts, name)
-				fmt.Println("Contact deleted.")
+				fmt.Print("Confirm deletion (yes/no): ")
+				fmt.Scanln(&confirm)
+				if confirm == "yes" {
+					delete(contacts, name)
+					fmt.Println("Contact deleted.")
+				} else {
+					fmt.Println("Deletion cancelled.")
+				}
 			} else {
 				fmt.Println("Contact not found.")
 			}
@@ -123,6 +130,7 @@ for {
 		 var oldName, newName string
 		 fmt.Print("Enter current name: ")
 		 fmt.Scanln(&oldName)
+		 oldName = strings.ToLower(oldName)
 		 fmt.Print("Enter new name: ")
 		 fmt.Scanln(&newName)
 
